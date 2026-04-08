@@ -46,7 +46,6 @@ button {
   background: #111827;
   padding: 10px;
   border-radius: 8px;
-  word-break: break-all;
 }
 </style>
 </head>
@@ -79,19 +78,17 @@ landbruno1@gmail.com
 
 <button onclick="copiarPix()">Copiar chave Pix</button>
 
-<p>Após pagar, envie o comprovante no WhatsApp</p>
-
 <button onclick="irWhats()">Enviar comprovante</button>
 </div>
 
 <div class="card">
-<h3>👥 Jogadores Ativos</h3>
+<h3>👥 Jogadores</h3>
 <div id="lista"></div>
 </div>
 
 <div class="card">
-<h3>🎮 Link da Partida</h3>
-<div id="linkPartida">🔒 Será liberado pelo administrador</div>
+<h3>🎮 Partida</h3>
+<div id="linkPartida">🔒 Aguardando liberação</div>
 </div>
 
 <hr>
@@ -100,16 +97,9 @@ landbruno1@gmail.com
 
 <div class="admin" id="admin">
 
-<div class="card">
-<h3>Admin</h3>
+<input id="novoLink" placeholder="Cole o link da sala">
 
-<input id="novoLink" placeholder="Cole o link da sala aqui">
-
-<button onclick="liberarLink()">Liberar Link da Partida</button>
-
-<button onclick="resetar()">Resetar tudo</button>
-
-</div>
+<button onclick="liberarLink()">Liberar partida</button>
 
 </div>
 
@@ -163,16 +153,19 @@ function cadastrar(){
 function copiarPix(){
   let chave = document.getElementById("pixKey").innerText;
   navigator.clipboard.writeText(chave);
-  alert("Chave Pix copiada!");
+  alert("Pix copiado!");
 }
 
 function irWhats(){
-  let msg = "Já fiz o pagamento, segue comprovante";
+  let nome = document.getElementById("nome").value;
+  let nick = document.getElementById("nick").value;
+
+  let msg = `Já paguei ✅ Nome: ${nome} Nick: ${nick}`;
   window.location.href = `https://wa.me/5521991112671?text=${encodeURIComponent(msg)}`;
 }
 
 function login(){
-  let senha = prompt("Senha admin:");
+  let senha = prompt("Senha:");
   if(senha === "1234"){
     document.getElementById("admin").style.display = "block";
   }
@@ -182,20 +175,15 @@ function liberarLink(){
   let link = document.getElementById("novoLink").value;
   localStorage.setItem("link", link);
   document.getElementById("linkPartida").innerHTML =
-    `<a href="${link}" target="_blank">🔓 Entrar na partida</a>`;
+    `<a href="${link}" target="_blank">Entrar na partida</a>`;
 }
 
 function carregarLink(){
   let link = localStorage.getItem("link");
   if(link){
     document.getElementById("linkPartida").innerHTML =
-      `<a href="${link}" target="_blank">🔓 Entrar na partida</a>`;
+      `<a href="${link}" target="_blank">Entrar na partida</a>`;
   }
-}
-
-function resetar(){
-  localStorage.clear();
-  location.reload();
 }
 
 atualizar();
