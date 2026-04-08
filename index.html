@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Campeonato Brawl Pro</title>
+<title>Campeonato Brawl</title>
 
 <style>
 body {
@@ -19,11 +19,6 @@ body {
   padding: 10px;
 }
 
-img {
-  width: 100%;
-  border-radius: 10px;
-}
-
 .card {
   background: #1e293b;
   padding: 12px;
@@ -32,7 +27,7 @@ img {
   font-size: 14px;
 }
 
-input, button {
+input, textarea, button {
   width: 100%;
   padding: 10px;
   margin-top: 6px;
@@ -46,15 +41,14 @@ button {
   font-weight: bold;
 }
 
+.admin {
+  display: none;
+}
+
 .pix {
   background: #111827;
   padding: 8px;
   border-radius: 6px;
-  font-size: 13px;
-}
-
-.admin {
-  display: none;
 }
 </style>
 </head>
@@ -63,21 +57,18 @@ button {
 
 <div class="container">
 
-<!-- IMAGEM -->
-<img src="banner.png">
+<h2>🏆 Campeonato Brawl</h2>
 
 <div class="card">
-<p>🎟️ Entrada: R$ 5,00</p>
-<p>💀 Cada kill: R$ 3,00</p>
-<p>🏆 1º Lugar: R$ 10,00</p>
+<p id="infoValores"></p>
+<p id="infoVagas"></p>
 </div>
 
 <div class="card">
 <input id="nome" placeholder="Seu nome">
-<input id="celular" placeholder="Seu número">
 <input id="nick" placeholder="Seu nick">
 
-<button onclick="mostrarPagamento()">Garantir vaga</button>
+<button onclick="abrirPagamento()">Garantir vaga</button>
 </div>
 
 <div class="card" id="pagamento" style="display:none;">
@@ -91,8 +82,8 @@ button {
 </div>
 
 <div class="card">
-<h3>👥 Jogadores Confirmados</h3>
-<div id="lista">Nenhum jogador ainda</div>
+<h3>👥 Jogadores</h3>
+<div id="lista">Nenhum ainda</div>
 </div>
 
 <div class="card">
@@ -107,13 +98,19 @@ button {
 <div class="admin" id="admin">
 
 <div class="card">
-<h3>Controle Admin</h3>
 
-<textarea id="jogadores" placeholder="Digite nomes dos jogadores"></textarea>
+<h3>Controle</h3>
 
-<input id="novoLink" placeholder="Link da partida">
+<input id="entrada" placeholder="Valor entrada (ex: 5)">
+<input id="kill" placeholder="Valor por kill (ex: 3)">
+<input id="premio" placeholder="Prêmio (ex: 10)">
+<input id="vagas" placeholder="Total de vagas (ex: 10)">
 
-<button onclick="salvarAdmin()">Salvar tudo</button>
+<textarea id="jogadores" placeholder="Lista de jogadores (um por linha)"></textarea>
+
+<input id="link" placeholder="Link da partida">
+
+<button onclick="salvar()">Salvar tudo</button>
 
 </div>
 
@@ -122,7 +119,7 @@ button {
 </div>
 
 <script>
-function mostrarPagamento(){
+function abrirPagamento(){
   let nome = document.getElementById("nome").value;
   let nick = document.getElementById("nick").value;
 
@@ -151,35 +148,59 @@ function login(){
   let senha = prompt("Senha:");
   if(senha === "1234"){
     document.getElementById("admin").style.display = "block";
+    carregarAdmin();
   }
 }
 
-function salvarAdmin(){
-  let jogadores = document.getElementById("jogadores").value;
-  let link = document.getElementById("novoLink").value;
+function salvar(){
+  let dados = {
+    entrada: document.getElementById("entrada").value,
+    kill: document.getElementById("kill").value,
+    premio: document.getElementById("premio").value,
+    vagas: document.getElementById("vagas").value,
+    jogadores: document.getElementById("jogadores").value,
+    link: document.getElementById("link").value
+  };
 
-  localStorage.setItem("jogadores", jogadores);
-  localStorage.setItem("link", link);
-
-  carregarDados();
+  localStorage.setItem("dados", JSON.stringify(dados));
+  carregar();
 }
 
-function carregarDados(){
-  let jogadores = localStorage.getItem("jogadores");
-  let link = localStorage.getItem("link");
+function carregar(){
+  let dados = JSON.parse(localStorage.getItem("dados"));
 
-  if(jogadores){
+  if(!dados) return;
+
+  document.getElementById("infoValores").innerText =
+    `Entrada: R$${dados.entrada} | Kill: R$${dados.kill} | Prêmio: R$${dados.premio}`;
+
+  document.getElementById("infoVagas").innerText =
+    `Vagas: ${dados.vagas}`;
+
+  if(dados.jogadores){
     document.getElementById("lista").innerHTML =
-      jogadores.replace(/\n/g, "<br>");
+      dados.jogadores.replace(/\n/g, "<br>");
   }
 
-  if(link){
+  if(dados.link){
     document.getElementById("linkPartida").innerHTML =
-      `<a href="${link}" target="_blank">Entrar na partida</a>`;
+      `<a href="${dados.link}" target="_blank">Entrar na partida</a>`;
   }
 }
 
-carregarDados();
+function carregarAdmin(){
+  let dados = JSON.parse(localStorage.getItem("dados"));
+  if(!dados) return;
+
+  document.getElementById("entrada").value = dados.entrada;
+  document.getElementById("kill").value = dados.kill;
+  document.getElementById("premio").value = dados.premio;
+  document.getElementById("vagas").value = dados.vagas;
+  document.getElementById("jogadores").value = dados.jogadores;
+  document.getElementById("link").value = dados.link;
+}
+
+carregar();
 </script>
 
 </body>
