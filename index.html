@@ -1,5 +1,190 @@
 <!DOCTYPE html>
+<html lang="pt-br"<!DOCTYPE html>
 <html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campeonato Brawl Pro</title>
+
+<style>
+body {
+  background: #0f172a;
+  color: white;
+  font-family: Arial;
+  margin: 0;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 10px;
+}
+
+img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #9333ea;
+  color: white;
+  font-weight: bold;
+}
+
+.pix {
+  background: #111827;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.admin {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- IMAGEM -->
+<img src="banner.png">
+
+<div class="card">
+<p>🎟️ Entrada: R$ 5,00</p>
+<p>💀 Cada kill: R$ 3,00</p>
+<p>🏆 1º Lugar: R$ 10,00</p>
+</div>
+
+<div class="card">
+<input id="nome" placeholder="Seu nome">
+<input id="celular" placeholder="Seu número">
+<input id="nick" placeholder="Seu nick">
+
+<button onclick="mostrarPagamento()">Garantir vaga</button>
+</div>
+
+<div class="card" id="pagamento" style="display:none;">
+<h3>💰 Pix</h3>
+
+<div class="pix">landbruno1@gmail.com</div>
+
+<button onclick="copiarPix()">Copiar chave Pix</button>
+
+<button onclick="irWhats()">Enviar comprovante</button>
+</div>
+
+<div class="card">
+<h3>👥 Jogadores Confirmados</h3>
+<div id="lista">Nenhum jogador ainda</div>
+</div>
+
+<div class="card">
+<h3>🎮 Partida</h3>
+<div id="linkPartida">🔒 Aguardando liberação</div>
+</div>
+
+<hr>
+
+<button onclick="login()">Admin</button>
+
+<div class="admin" id="admin">
+
+<div class="card">
+<h3>Controle Admin</h3>
+
+<textarea id="jogadores" placeholder="Digite nomes dos jogadores"></textarea>
+
+<input id="novoLink" placeholder="Link da partida">
+
+<button onclick="salvarAdmin()">Salvar tudo</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+function mostrarPagamento(){
+  let nome = document.getElementById("nome").value;
+  let nick = document.getElementById("nick").value;
+
+  if(nome === "" || nick === ""){
+    alert("Preencha nome e nick");
+    return;
+  }
+
+  document.getElementById("pagamento").style.display = "block";
+}
+
+function copiarPix(){
+  navigator.clipboard.writeText("landbruno1@gmail.com");
+  alert("Pix copiado!");
+}
+
+function irWhats(){
+  let nome = document.getElementById("nome").value;
+  let nick = document.getElementById("nick").value;
+
+  let msg = `Já paguei ✅\nNome: ${nome}\nNick: ${nick}`;
+  window.location.href = `https://wa.me/5521991112671?text=${encodeURIComponent(msg)}`;
+}
+
+function login(){
+  let senha = prompt("Senha:");
+  if(senha === "1234"){
+    document.getElementById("admin").style.display = "block";
+  }
+}
+
+function salvarAdmin(){
+  let jogadores = document.getElementById("jogadores").value;
+  let link = document.getElementById("novoLink").value;
+
+  localStorage.setItem("jogadores", jogadores);
+  localStorage.setItem("link", link);
+
+  carregarDados();
+}
+
+function carregarDados(){
+  let jogadores = localStorage.getItem("jogadores");
+  let link = localStorage.getItem("link");
+
+  if(jogadores){
+    document.getElementById("lista").innerHTML =
+      jogadores.replace(/\n/g, "<br>");
+  }
+
+  if(link){
+    document.getElementById("linkPartida").innerHTML =
+      `<a href="${link}" target="_blank">Entrar na partida</a>`;
+  }
+}
+
+carregarDados();
+</script>
+
+</body>
+</html>
 <head>
 <meta charset="UTF-8">
 <title>Campeonato Brawl Pro</title>
