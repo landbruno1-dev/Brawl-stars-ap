@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campeonato Brawl</title>
+
+<style>
+body {
+  background: #0f172a;
+  color: white;
+  font-family: Arial;
+  margin: 0;
+}
+
+.container {
+  max-width: 480px;
+  margin: auto;
+  padding: 15px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+input, textarea, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #9333ea;
+  color: white;
+  font-weight: bold;
+}
+
+.admin {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🏆 Campeonato Brawl</h2>
+
+<div class="card">
+<p>💰 Valor de inscrição: R$ 5,00</p>
+</div>
+
+<div class="card">
+<input id="nome" placeholder="Seu nome">
+<input id="nick" placeholder="Seu nick">
+
+<button onclick="mostrarPix()">Garantir vaga</button>
+</div>
+
+<div class="card" id="pixBox" style="display:none;">
+<p>Chave Pix:</p>
+<p><b>landbruno1@gmail.com</b></p>
+
+<button onclick="irWhats()">Enviar comprovante</button>
+</div>
+
+<div class="card">
+<h3>👥 Jogadores</h3>
+<div id="lista">Nenhum ainda</div>
+</div>
+
+<div class="card">
+<h3>🎮 Partida</h3>
+<div id="link">🔒 Aguardando</div>
+</div>
+
+<hr>
+
+<button onclick="login()">Admin</button>
+
+<div class="admin" id="admin">
+
+<div class="card">
+<textarea id="jogadores" placeholder="Jogadores (um por linha)"></textarea>
+<input id="linkInput" placeholder="Link da partida">
+
+<button onclick="salvar()">Salvar</button>
+</div>
+
+</div>
+
+</div>
+
+<script>
+function mostrarPix(){
+  let nome = document.getElementById("nome").value;
+  let nick = document.getElementById("nick").value;
+
+  if(nome === "" || nick === ""){
+    alert("Preencha tudo");
+    return;
+  }
+
+  document.getElementById("pixBox").style.display = "block";
+}
+
+function irWhats(){
+  let nome = document.getElementById("nome").value;
+  let nick = document.getElementById("nick").value;
+
+  let msg = `Já paguei\nNome: ${nome}\nNick: ${nick}`;
+  window.location.href = "https://wa.me/5521991112671?text=" + encodeURIComponent(msg);
+}
+
+function login(){
+  let senha = prompt("Senha:");
+  if(senha === "1234"){
+    document.getElementById("admin").style.display = "block";
+    carregarAdmin();
+  }
+}
+
+function salvar(){
+  localStorage.setItem("jogadores", document.getElementById("jogadores").value);
+  localStorage.setItem("link", document.getElementById("linkInput").value);
+  carregar();
+}
+
+function carregar(){
+  let j = localStorage.getItem("jogadores");
+  let l = localStorage.getItem("link");
+
+  if(j){
+    document.getElementById("lista").innerHTML = j.replace(/\n/g,"<br>");
+  }
+
+  if(l){
+    document.getElementById("link").innerHTML = '<a href="'+l+'" target="_blank">Entrar na partida</a>';
+  }
+}
+
+function carregarAdmin(){
+  document.getElementById("jogadores").value = localStorage.getItem("jogadores") || "";
+  document.getElementById("linkInput").value = localStorage.getItem("link") || "";
+}
+
+carregar();
+</script>
+
+</body>
+</html>
