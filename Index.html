@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campeonato Brawl</title>
+
+<style>
+body {
+  background: #0f172a;
+  color: white;
+  font-family: Arial;
+  margin: 0;
+}
+
+.container {
+  max-width: 480px;
+  margin: auto;
+  padding: 15px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 18px;
+}
+
+h2, h3 {
+  margin: 5px 0;
+}
+
+input, textarea, button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  background: #9333ea;
+  color: white;
+  font-weight: bold;
+}
+
+.pix {
+  background: #111827;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.admin {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🏆 Campeonato Brawl</h2>
+
+<div class="card">
+<p>💰 Valor de inscrição: <b>R$ 5,00</b></p>
+</div>
+
+<div class="card">
+<input id="nome" placeholder="Seu nome">
+<input id="nick" placeholder="Seu nick">
+
+<button onclick="abrirPagamento()">Garantir vaga</button>
+</div>
+
+<div class="card" id="pagamento" style="display:none;">
+<h3>💰 Pagamento via Pix</h3>
+
+<div class="pix">landbruno1@gmail.com</div>
+
+<button onclick="copiarPix()">Copiar chave Pix</button>
+
+<button onclick="irWhats()">Enviar comprovante</button>
+</div>
+
+<div class="card">
+<h3>👥 Jogadores Confirmados</h3>
+<div id="lista">Nenhum jogador ainda</div>
+</div>
+
+<div class="card">
+<h3>🎮 Link da Partida</h3>
+<div id="linkPartida">🔒 Aguardando liberação</div>
+</div>
+
+<hr>
+
+<button onclick="login()">Painel Admin</button>
+
+<div class="admin" id="admin">
+
+<div class="card">
+
+<h3>Admin</h3>
+
+<textarea id="jogadores" placeholder="Digite os jogadores (um por linha)"></textarea>
+
+<input id="link" placeholder="Link da partida">
+
+<button onclick="salvar()">Salvar alterações</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+function abrirPagamento(){
+  let nome = document.getElementById("nome").value;
+  let nick = document.getElementById("nick").value;
+
+  if(nome === "" || nick === ""){
+    alert("Preencha nome e nick");
+    return;
+  }
+
+  document.getElementById("pagamento").style.display = "block";
+}
+
+function copiarPix(){
+  navigator.clipboard.writeText("landbruno1@gmail.com");
+  alert("Pix copiado!");
+}
+
+function irWhats(){
+  let nome = document.getElementById("nome").value;
+  let nick = document.getElementById("nick").value;
+
+  let msg = `Já paguei ✅\nNome: ${nome}\nNick: ${nick}`;
+  window.location.href = `https://wa.me/5521991112671?text=${encodeURIComponent(msg)}`;
+}
+
+function login(){
+  let senha = prompt("Senha:");
+  if(senha === "1234"){
+    document.getElementById("admin").style.display = "block";
+    carregarAdmin();
+  }
+}
+
+function salvar(){
+  let jogadores = document.getElementById("jogadores").value;
+  let link = document.getElementById("link").value;
+
+  localStorage.setItem("jogadores", jogadores);
+  localStorage.setItem("link", link);
+
+  carregar();
+}
+
+function carregar(){
+  let jogadores = localStorage.getItem("jogadores");
+  let link = localStorage.getItem("link");
+
+  if(jogadores){
+    document.getElementById("lista").innerHTML =
+      jogadores.replace(/\n/g, "<br>");
+  }
+
+  if(link){
+    document.getElementById("linkPartida").innerHTML =
+      `<a href="${link}" target="_blank">Entrar na partida</a>`;
+  }
+}
+
+function carregarAdmin(){
+  document.getElementById("jogadores").value =
+    localStorage.getItem("jogadores") || "";
+
+  document.getElementById("link").value =
+    localStorage.getItem("link") || "";
+}
+
+carregar();
+</script>
+
+</body>
+</html>
